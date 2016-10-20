@@ -3,38 +3,43 @@ var eventify = angular.module('eventify', ['ui.router', 'restangular', 'Devise']
 
 eventify.config(
 	['$urlRouterProvider', '$stateProvider',
-	function($urlRouterProvider, $stateProvider) {
+		function ($urlRouterProvider, $stateProvider) {
 
-		$urlRouterProvider.otherwise('/');
+			$urlRouterProvider.otherwise('/');
 
-		$stateProvider
-		.state('create', {
-			url: '/',
-			templateUrl: 'templates/create.html',
-			resolve: {
-				currentUser: ['$state', 'Auth',
-					function($state, Auth) {
-						if (!Auth.isAuthenticated()) {
-							$state.go('signin');
-						} 
-					}]
-			}
-		})
+			$stateProvider
+				.state('signin', {
+					url: '/signin',
+					template: 'sign in'
 
-		.state('signin', {
-			url: '/signin',
-			template: 'sign in'
+				})
 
-		})
+			.state('signup', {
+					url: '/signup',
+					template: 'sign up'
 
-		.state('signup', {
-			url: 'signup',
-			template: 'sign up'
+				})
+				.state('create', {
+					url: '/',
+					templateUrl: 'templates/create.html',
+					controller: 'CreateCtrl',
+					resolve: {
+						currentUser: ['$state', 'Auth', '$timeout',
+							function ($state, Auth, $timeout) {
+								if (!Auth.isAuthenticated()) {
+									$timeout(function () {
+										$state.go('signin');
+									})
+								}
+							}
+						]
+					}
+				})
 
-		})
 
-		.state('events', {
-			abstract: true
-		})
+			.state('events', {
+				abstract: true
+			})
 
-	}])
+		}
+	])
