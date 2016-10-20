@@ -5,7 +5,7 @@ eventify.config(
 	['$urlRouterProvider', '$stateProvider',
 		function ($urlRouterProvider, $stateProvider) {
 
-			$urlRouterProvider.otherwise('/');
+			$urlRouterProvider.otherwise('/create');
 
 			$stateProvider
 				.state('signin', {
@@ -21,7 +21,7 @@ eventify.config(
 							Auth.login(params, config).then(
 								function success(user) {
 									$scope.signinParams = {};
-									$state.go('create');
+									$state.go('home.create');
 								}
 							)
 						};
@@ -30,28 +30,52 @@ eventify.config(
 
 			.state('signup', {
 					url: '/signup',
-					template: 'sign up'
+					templateUrl: 'templates/auth/sign_up.html',
+					controller: ['Auth', '$scope', '$state', function (Auth, $scope, $state) {
+						var config = {
+							headers: {
+								'X-HTTP-Method-Override': 'POST'
+							}
+						};
+						$scope.signup = function (params) {
+							Auth.register(params, config).then(
+								function success(user) {
+									$scope.signupParams = {};
+									$state.go('home.create');
+								}
+							)
+						}
+					}]
 				})
-				.state('create', {
+				.state('home', {
 					url: '/',
-					templateUrl: 'templates/create.html',
-					controller: 'CreateCtrl',
+					abstract: true,
+					template: "<ui-view></ui-view>",
 					resolve: {
 						currentUser: ['$state', 'Auth',
 							function ($state, Auth) {
 
-								Auth.currentUser().then(
+								return Auth.currentUser().then(
 									function success(user) {
+										console.log(user);
 										return user;
-
-									}, function(error) {
+									},
+									function (error) {
 										$state.go('signin');
 									}
 								);
 
 							}
 						]
-					}
+					},
+					controller: ['$scope', 'currentUser', function ($scope, currentUser) {
+						$scope.currentUser = currentUser;
+					}]
+				})
+				.state('home.create', {
+					url: 'create',
+					templateUrl: 'templates/create.html',
+					controller: 'CreateCtrl'
 				})
 
 
@@ -61,4 +85,3 @@ eventify.config(
 
 		}
 	])
-

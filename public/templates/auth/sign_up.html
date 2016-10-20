@@ -1,0 +1,23 @@
+<div class="signup">
+  <form ng-init="signupParams = {}">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" name="username" class="form-control" ng-model="signupParams.username">
+    </div>
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" name="email" class="form-control" ng-model="signupParams.email">
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" name="password" class="form-control" ng-model="signupParams.password">
+    </div>
+    <div class="form-group">
+      <label for="password_confirmation">Password Confirmation:</label>
+      <input type="password" name="password_confirmation" class="form-control" ng-model="signupParams.password_confirmation">
+    </div>
+    <div class="form-group">
+      <input type="submit" name="Sign Up" class="btn btn-primary btn-lg btn-block" ng-click="signup(signupParams)">
+    </div>
+  </form>
+</div>
