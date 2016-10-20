@@ -1,3 +1,7 @@
 eventify.controller('CreateCtrl', ['currentUser', '$scope', function (currentUser, $scope) {
-	$scope.currentUser = currentUser;
+	currentUser.then(
+		function success(user) {
+			$scope.currentUser = user;
+		}
+	);
 }]);

@@ -10,14 +10,27 @@ eventify.config(
 			$stateProvider
 				.state('signin', {
 					url: '/signin',
-					template: 'sign in'
-
+					templateUrl: 'templates/auth/sign_in.html',
+					controller: ['Auth', '$scope', '$state', function (Auth, $scope, $state) {
+						var config = {
+							headers: {
+								'X-HTTP-Method-Override': 'POST'
+							}
+						};
+						$scope.signin = function (params) {
+							Auth.login(params, config).then(
+								function success(user) {
+									$scope.signinParams = {};
+									$state.go('create');
+								}
+							)
+						};
+					}]
 				})
 
 			.state('signup', {
 					url: '/signup',
 					template: 'sign up'
-
 				})
 				.state('create', {
 					url: '/',
@@ -29,7 +42,8 @@ eventify.config(
 								if (!Auth.isAuthenticated()) {
 									$timeout(function () {
 										$state.go('signin');
-									})
+									});
+									return Auth.currentUser();
 								}
 							}
 						]
