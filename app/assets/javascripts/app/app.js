@@ -37,14 +37,18 @@ eventify.config(
 					templateUrl: 'templates/create.html',
 					controller: 'CreateCtrl',
 					resolve: {
-						currentUser: ['$state', 'Auth', '$timeout',
-							function ($state, Auth, $timeout) {
-								if (!Auth.isAuthenticated()) {
-									$timeout(function () {
+						currentUser: ['$state', 'Auth',
+							function ($state, Auth) {
+
+								Auth.currentUser().then(
+									function success(user) {
+										return user;
+
+									}, function(error) {
 										$state.go('signin');
-									});
-									return Auth.currentUser();
-								}
+									}
+								);
+
 							}
 						]
 					}
@@ -57,3 +61,4 @@ eventify.config(
 
 		}
 	])
+

@@ -1,7 +1,13 @@
-eventify.controller('CreateCtrl', ['currentUser', '$scope', function (currentUser, $scope) {
-	currentUser.then(
-		function success(user) {
-			$scope.currentUser = user;
-		}
-	);
+eventify.controller('CreateCtrl', 
+	['currentUser', '$scope', 'Auth', '$state',
+	function (currentUser, $scope, Auth, $state) {
+
+	$scope.currentUser = currentUser;
+
+
+	$scope.logout = function() {
+		Auth.logout().then(function() {
+			$state.go('signin');
+		})
+	}
 }]);
